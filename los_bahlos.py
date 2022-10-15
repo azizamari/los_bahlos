@@ -141,3 +141,9 @@ def return_keywords(initial_text,summarized_text):
 
 keywords_important = return_keywords(txt,summarized_text)
 print(keywords_important)
+
+
+## q generator using T5
+question_generator = T5ForConditionalGeneration.from_pretrained('ramsrigouthamg/t5_squad_v1')
+token_2_question = T5Tokenizer.from_pretrained('ramsrigouthamg/t5_squad_v1')
+question_generator = question_generator.to(device)
