@@ -138,7 +138,7 @@ def return_keywords(initial_text,summarized_text, number_of_examples=3):
     number_of_examples=len(keywords_important)
   return list(np.random.choice(keywords_important, size=number_of_examples))
 
-examples=2
+examples=5
 keywords_important = return_keywords(txt,summarized_text,examples)
 print(keywords_important)
 
@@ -176,4 +176,11 @@ for answer in keywords_important:
 # setup sense2vec for word vectors
 from sense2vec import Sense2Vec
 s2v = Sense2Vec().from_disk('s2v_old')
+
+
+# sentence transforming model
+
+from sentence_transformers import SentenceTransformer
+sentence_transformer_model = SentenceTransformer('msmarco-distilbert-base-v3')
+
 
