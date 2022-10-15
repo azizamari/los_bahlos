@@ -184,3 +184,66 @@ from sentence_transformers import SentenceTransformer
 sentence_transformer_model = SentenceTransformer('msmarco-distilbert-base-v3')
 
 
+# define needed functions for finding similarity
+
+from similarity.normalized_levenshtein import NormalizedLevenshtein
+from sklearn.metrics.pairwise import cosine_similarity
+
+normalized_levenshtein = NormalizedLevenshtein()
+
+def filtering_of_same_sense_words(original,wordlist):
+  filtered=[]
+  base_sense =original.split('|')[1] 
+  for i in wordlist:
+    if i[0].split('|')[1] == base_sense:
+      filtered.append(i[0].split('|')[0].replace("_", " ").title().strip())
+  return filtered
+
+def return_words_with_high_similarity(wordlist,wrd):
+  similarity_score=[]
+  for i in wordlist:
+    similarity_score.append(normalized_levenshtein.similarity(i.lower(),wrd.lower()))
+  return max(similarity_score)
+
+def get_words_from_sense2vec(word,s2v,topn,question):
+    result = []
+    print ("word ",word)
+    try:
+      sense = s2v.get_best_sense(word, senses= ["NOUN", "PERSON","PRODUCT","LOC","ORG","EVENT","NORP","WORK OF ART","FAC","GPE","NUM","FACILITY"])
+      most_similar = s2v.most_similar(sense, n=topn)
+      # print (most_similar)
+      result = filtering_of_same_sense_words(sense,most_similar)
+    except:
+      result =[]
+
+    threshold = 0.6
+    final=[word]
+    checklist =question.split()
+    for x in result:
+      if return_words_with_high_similarity(final,x)<threshold and x not in final and x not in checklist:
+        final.append(x)
+    
+    return final[1:]
+
+def mmr(doc_embedding, word_embeddings, words, top_n, lambda_param):
+
+    word_doc_similarity = cosine_similarity(word_embeddings, doc_embedding)
+    word_similarity = cosine_similarity(word_embeddings)
+
+    keywords_index = [np.argmax(word_doc_similarity)]
+    candidates_index = [i for i in range(len(words)) if i != keywords_index[0]]
+
+    for _ in range(top_n - 1):
+        candidate_similarities = word_doc_similarity[candidates_index, :]
+        target_similarities = np.max(word_similarity[candidates_index][:, keywords_index], axis=1)
+
+        # valeur MMR
+        mmr = (lambda_param) * candidate_similarities - (1-lambda_param) * target_similarities.reshape(-1, 1)
+        mmr_idx = candidates_index[np.argmax(mmr)]
+
+        keywords_index.append(mmr_idx)
+        candidates_index.remove(mmr_idx)
+
+    return [words[idx] for idx in keywords_index]
+
+
