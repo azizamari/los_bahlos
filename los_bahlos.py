@@ -1,6 +1,7 @@
 
 from textwrap3 import wrap
-import torch
+import random
+import numpy as np
 
 def text_wrap_example(inputText):
     for wrp in wrap(inputText, 150):
@@ -22,6 +23,13 @@ def setup_t5_trans():
     return summary_tokenizer, summary_model
 
 
+def set_seed(seed: int):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+
 ## main program
 text_wrap_example(txt)
 summary_tokenizer, summary_model = setup_t5_trans()
+set_seed(42)
