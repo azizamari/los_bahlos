@@ -148,3 +148,25 @@ print(keywords_important)
 question_generator = T5ForConditionalGeneration.from_pretrained('ramsrigouthamg/t5_squad_v1')
 token_2_question = T5Tokenizer.from_pretrained('ramsrigouthamg/t5_squad_v1')
 question_generator = question_generator.to(device)
+
+# sample question
+
+def generate_questions(context,answer,model,tokenizer):
+  text = "context: {} answer: {}".format(context,answer)
+  encoding = tokenizer.encode_plus(text,max_length=500, pad_to_max_length=False,truncation=True, return_tensors="pt").to(device)
+  input_ids, attention_mask = encoding["input_ids"], encoding["attention_mask"]
+
+  outs = model.generate(input_ids=input_ids, attention_mask=attention_mask, early_stopping=True, num_beams=5, num_return_sequences=1, no_repeat_ngram_size=2, max_length=72)
+
+  decoded_output=[]
+  for ids in outs:
+    decoded_output.append(tokenizer.decode(ids,skip_special_tokens=True) )
+
+  question_4_keyword = decoded_output[0].replace("question:","")
+  question_4_keyword= question_4_keyword.strip()
+  return question_4_keyword
+
+
+for answer in keywords_important:
+  ques = generate_questions(summarized_text,answer,question_generator,token_2_question)
+  print (ques,'\n',answer.capitalize())
