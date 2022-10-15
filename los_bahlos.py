@@ -1,4 +1,3 @@
-
 from textwrap3 import wrap
 import random
 import numpy as np
@@ -170,3 +169,8 @@ def generate_questions(context,answer,model,tokenizer):
 for answer in keywords_important:
   ques = generate_questions(summarized_text,answer,question_generator,token_2_question)
   print (ques,'\n',answer.capitalize())
+
+
+# setup sense2vec for word vectors
+from sense2vec import Sense2Vec
+s2v = Sense2Vec().from_disk('s2v_old')
