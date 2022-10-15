@@ -52,7 +52,6 @@ def postprocesstext (content):
 def summarizer(text,model,tokenizer):
   text = text.strip().replace("\n"," ")
   text = "summarize: "+text
-  # print (text)
   max_len = 512
   encoding = tokenizer.encode_plus(text,max_length=max_len, pad_to_max_length=False,truncation=True, return_tensors="pt").to(device)
 
@@ -87,3 +86,33 @@ print ("Summarized Text >>")
 for wrp in wrap(summarized_text, 150):
   print (wrp)
 print ("\n")
+
+
+# Extract keywords and nouns
+
+from nltk.corpus import stopwords
+import string
+import pke
+import traceback
+
+def get_nouns_multipartite(content):
+    out=[]
+    try:
+        extract_creator = pke.unsupervised.MultipartiteRank()
+        extract_creator.load_document(input=content,language='en')
+        #  only leavy propn and nouns
+        pos = {'PROPN','NOUN'}
+        stopwords_list = list(string.punctuation)
+        stopwords_list += ['-lrb-', '-rrb-', '-lcb-', '-rcb-', '-lsb-', '-rsb-']
+        stopwords_list += stopwords.words('english')
+        extract_creator.candidate_selection(pos=pos)
+        extract_creator.candidate_weighting(alpha=1.1, threshold=0.75, method='average')
+        keyphrases = extract_creator.get_n_best(n=15)
+        for val in keyphrases:out.append(val[0])
+    except:
+        out = []
+        traceback.print_exc()
+
+    return out
+
+
