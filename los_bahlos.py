@@ -116,3 +116,28 @@ def get_nouns_multipartite(content):
     return out
 
 
+# process extracted keywords
+
+from flashtext import KeywordProcessor
+
+def return_keywords(initial_text,summarized_text):
+  keyword_list = get_nouns_multipartite(initial_text)
+  print ("keywords unsummarized: ",keyword_list)
+  keyword_processor = KeywordProcessor()
+  for i in keyword_list:
+    keyword_processor.add_keyword(i)
+
+  found_keywords_in_text = keyword_processor.extract_keywords(summarized_text)
+  found_keywords_in_text = list(set(found_keywords_in_text))
+  print ("found_keywords_in_text in summarized: ",found_keywords_in_text)
+
+  important_keywords =[]
+  for keyword in keyword_list:
+    if keyword in found_keywords_in_text:
+      important_keywords.append(keyword)
+
+  return important_keywords[:4]
+
+
+keywords_important = return_keywords(txt,summarized_text)
+print(keywords_important)
