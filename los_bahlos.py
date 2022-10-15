@@ -28,8 +28,62 @@ def set_seed(seed: int):
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-## main program
-text_wrap_example(txt)
+## init program
+# text_wrap_example(txt)
 summary_tokenizer, summary_model = setup_t5_trans()
 set_seed(42)
+
+
+## summarizer service 
+
+from nltk.corpus import wordnet as wn
+from nltk.tokenize import sent_tokenize
+
+def postprocesstext (content):
+  final=""
+  for sent in sent_tokenize(content):
+    sent = sent.capitalize()
+    final = final +" "+sent
+  return final
+
+
+def summarizer(text,model,tokenizer):
+  text = text.strip().replace("\n"," ")
+  text = "summarize: "+text
+  # print (text)
+  max_len = 512
+  encoding = tokenizer.encode_plus(text,max_length=max_len, pad_to_max_length=False,truncation=True, return_tensors="pt").to(device)
+
+  input_ids, attention_mask = encoding["input_ids"], encoding["attention_mask"]
+
+  outs = model.generate(input_ids=input_ids,
+                                  attention_mask=attention_mask,
+                                  early_stopping=True,
+                                  num_beams=3,
+                                  num_return_sequences=1,
+                                  no_repeat_ngram_size=2,
+                                  min_length = 75,
+                                  max_length=300)
+
+
+  dec = [tokenizer.decode(ids,skip_special_tokens=True) for ids in outs]
+  summary = dec[0]
+  summary = postprocesstext(summary)
+  summary= summary.strip()
+
+  return summary
+
+
+summarized_text = summarizer(txt,summary_model,summary_tokenizer)
+
+
+print ("\noriginal Text >>")
+for wrp in wrap(txt, 150):
+  print (wrp)
+print ("\n")
+print ("Summarized Text >>")
+for wrp in wrap(summarized_text, 150):
+  print (wrp)
+print ("\n")
