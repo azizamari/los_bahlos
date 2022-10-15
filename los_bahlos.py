@@ -138,7 +138,7 @@ def return_keywords(initial_text,summarized_text, number_of_examples=3):
     number_of_examples=len(keywords_important)
   return list(np.random.choice(keywords_important, size=number_of_examples))
 
-examples=5
+examples=2
 keywords_important = return_keywords(txt,summarized_text,examples)
 print(keywords_important)
 
@@ -170,7 +170,10 @@ for answer in keywords_important:
   ques = generate_questions(summarized_text,answer,question_generator,token_2_question)
   print (ques,'\n',answer.capitalize())
 
+# we generated answer/ questions with a single term answer
+# now we need to find similar yet not exact distraction words to make the question a multiple choice quizz
 
 # setup sense2vec for word vectors
 from sense2vec import Sense2Vec
 s2v = Sense2Vec().from_disk('s2v_old')
+
