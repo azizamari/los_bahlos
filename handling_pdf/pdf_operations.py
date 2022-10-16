@@ -1,5 +1,4 @@
 import PyPDF2
-import re
 
 file_name="course.pdf"
 doc=PyPDF2.PdfFileReader(file_name)
