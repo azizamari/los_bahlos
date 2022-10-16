@@ -1,0 +1,13 @@
+.Title{
+    font-size: 30px;
+}
+.question{
+    font-size: 24px;
+}
+span ,.wronganswer{
+    margin-right: 20px;
+}
+.cont{
+    display: flex;
+    
+}

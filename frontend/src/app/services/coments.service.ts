@@ -7,7 +7,7 @@ export class ComentsService {
 
   constructor(private http:HttpClient) { }
   getcoments(){
-    return this.http.get("https://jsonplaceholder.typicode.com/posts/1/comments")
+    return this.http.get("http://localhost:8000/quizzes")
   }
 }
 

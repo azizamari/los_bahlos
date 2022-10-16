@@ -1,6 +1,5 @@
-import { Component,OnInit } from '@angular/core';
-import { Comments } from './classes/comments';
-import { ComentsService } from './services/coments.service';
+import { Component,Input,OnInit } from '@angular/core';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -8,16 +7,13 @@ import { ComentsService } from './services/coments.service';
 })
 export class AppComponent implements OnInit {
   title = 'GoMyCode2022';
-  lstcomments: any=[];
-  constructor(private freeapiservice : ComentsService){}
-  getcoments(){
-    this.freeapiservice.getcoments().subscribe((data:any)=>{
-           this.lstcomments=data
-           console.log(this.lstcomments)
-    })
-  }
+ 
+
+  constructor(){}
+  
+  
+  
   ngOnInit():void{
-   this.getcoments()
-   console.log('hheee')
+
   }
 }

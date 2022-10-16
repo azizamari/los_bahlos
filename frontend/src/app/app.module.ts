@@ -7,6 +7,8 @@ import { ContactComponent } from './components/contact/contact.component';
 import { AboutComponent } from './components/about/about.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ComentsService } from './services/coments.service';
+import { QuizComponent } from './components/quiz/quiz.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 @NgModule({
   declarations: [
@@ -14,6 +16,8 @@ import { ComentsService } from './services/coments.service';
     HomepageComponent,
     ContactComponent,
     AboutComponent,
+    QuizComponent,
+    NavbarComponent,
     
    
   ],

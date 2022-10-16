@@ -1,0 +1,20 @@
+<div class="cont">
+        
+   
+    <div *ngFor="let com of lstcomments">
+        <div class="Title">{{com.Title}}</div>
+    <div *ngFor="let data of question; let i = index">
+        <div *ngFor="let cell of data" >
+            <div class="question">{{ cell.text }}</div>
+            <span class="rightanswer">{{ cell.answer }}</span>
+            <span class="wronganswer">{{ cell.choices[0] }}</span>
+            <span class="wronganswer">{{ cell.choices[1] }}</span>
+        </div>
+    </div>
+</div>
+
+</div>
+<form method="post" action="http://127.0.0.1:8000/quizzes" enctype="multipart/form-data">
+    <input type="file" name="file" accept="application/pdf,application/vnd.ms-excel">
+    <input type="submit">
+</form>
