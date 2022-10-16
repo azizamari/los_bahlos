@@ -1,7 +1,6 @@
 from fastapi import FastAPI, UploadFile, File
 import json
 from fastapi.middleware.cors import CORSMiddleware
-from generate_json  import *
 
 app = FastAPI()
 
