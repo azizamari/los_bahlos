@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500&display=swap');
+.logo{
+    width: 250px;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.flexupload{
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.text{
+    font-family: 'Roboto Slab', serif;
+    font-style: bold;
+}
+#uploadbutton{
+    width: 150px;
+    height: auto;
+    margin: 20px;
+}
+#uploadbutton:hover{
+    background-color: green;
+}
+.flexbutton{
+    display: flex;
+    flex-direction: row;
+}

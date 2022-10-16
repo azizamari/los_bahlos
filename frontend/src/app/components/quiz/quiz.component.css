@@ -11,14 +11,15 @@ span ,.wronganswer{
 .cont{
     display: flex;
     justify-content: space-between;
-    width: 85%;
+    width: 95%;
     margin: auto;
     margin-top: 4rem;
 }
 .cont > div{
     background-color:#fafafa;
-    padding:1.2rem;
-    box-shadow: 0px 0px 12px 0px rgba(0,0,0,0.6);
+    padding:1.1rem;
+    box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.6);
+    border-radius: 10px;
 }
 .skill_text{
     font-family: 'Roboto', sans-serif;
@@ -42,4 +43,8 @@ span ,.wronganswer{
 }
 .wronganswer{
     color: red;
+}
+h2{
+    text-align: center;
+    
 }
