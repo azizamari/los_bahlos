@@ -1,7 +1,18 @@
 from fastapi import FastAPI, UploadFile, File
 import json
+from fastapi.middleware.cors import CORSMiddleware
 
-app=FastAPI()
+app = FastAPI()
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/quizzes")
 async def get_questions_from_pdf(file: UploadFile= File(...)):
