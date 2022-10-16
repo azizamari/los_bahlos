@@ -21,3 +21,10 @@ async def get_questions_from_pdf(file: UploadFile= File(...)):
         dictData = json.load(d)
     return dictData
     
+@app.get("/quizzes")
+def get_questions_from_pdf():
+    dictData={}
+    with open('result.json') as d:
+        dictData = json.load(d)
+    return dictData
+    
