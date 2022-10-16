@@ -29,3 +29,6 @@
     display: flex;
     flex-direction: row;
 }
+input[type="file"]{
+    color: transparent;
+}
