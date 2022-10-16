@@ -2,10 +2,10 @@ from textwrap3 import wrap
 import random
 import numpy as np
 
-def text_wrap_example(inputText):
-    for wrp in wrap(inputText, 150):
-        print (wrp)
-    print ("\n")
+# def text_wrap_example(inputText):
+#     for wrp in wrap(inputText, 150):
+#         print (wrp)
+#     print ("\n")
 txt="""You can easily edit a Symbol and propagate changes in real time across all the instances. In order to edit a Symbol, you must double click the Symbol. (Similar to editing a group on canvas) Any position, size or appearance changes to the elements in a Symbol are propagated to all copies. There is no master copy of the Symbol. You can edit from any copy of the Symbol and preview those changes in real time across your document. While position and appearance changes are linked, you can have unique text and bitmap content in a Symbol. What this means is that, you can override the text and image in a Symbol while keeping it appearance linked to all the other copies. Edit the Symbol and change the text or drop in a new image to override the content. Having the ability to override Symbols is very helpful. However, what happens if need to update all the copies of the Symbol to have the same text and bitmap content? The update all commands helps you specifically do that. Right click on the Symbol and select Update All from the context menu to push the text and bitmap content from that Symbol to all the copies. If you select a specific part of a nested Symbol and hit Update All, it only updates that part of the nested Symbol across all copies. Simplicity and power with the update all command."""
 
 
@@ -74,17 +74,17 @@ def summarizer(text,model,tokenizer):
   return summary
 
 
-summarized_text = summarizer(txt,summary_model,summary_tokenizer)
+# summarized_text = summarizer(txt,summary_model,summary_tokenizer)
 
 
-print ("\noriginal Text >>")
-for wrp in wrap(txt, 150):
-  print (wrp)
-print ("\n")
-print ("Summarized Text >>")
-for wrp in wrap(summarized_text, 150):
-  print (wrp)
-print ("\n")
+# print ("\noriginal Text >>")
+# for wrp in wrap(txt, 150):
+#   print (wrp)
+# print ("\n")
+# print ("Summarized Text >>")
+# for wrp in wrap(summarized_text, 150):
+#   print (wrp)
+# print ("\n")
 
 
 # Extract keywords and nouns
@@ -138,9 +138,9 @@ def return_keywords(initial_text,summarized_text, number_of_examples=3):
     number_of_examples=len(keywords_important)
   return keywords_important[:number_of_examples]
 
-examples=5
-keywords_important = return_keywords(txt,summarized_text,examples)
-print(keywords_important)
+# examples=5
+# keywords_important = return_keywords(txt,summarized_text,examples)
+# print(keywords_important)
 
 
 ## q generator using T5
@@ -166,9 +166,9 @@ def generate_questions(context,answer,model,tokenizer):
   return question_4_keyword
 
 
-for answer in keywords_important:
-  ques = generate_questions(summarized_text,answer,question_generator,token_2_question)
-  print (ques,'\n',answer.capitalize())
+# for answer in keywords_important:
+#   ques = generate_questions(summarized_text,answer,question_generator,token_2_question)
+#   print (ques,'\n',answer.capitalize())
 
 # we generated answer/ questions with a single term answer
 # now we need to find similar yet not exact distraction words to make the question a multiple choice quizz
@@ -207,7 +207,7 @@ def return_words_with_high_similarity(wordlist,wrd):
 
 def get_words_from_sense2vec(word,s2v,topn,question):
     result = []
-    print ("word ",word)
+    # print ("word ",word)
     try:
       sense = s2v.get_best_sense(word, senses= ["NOUN", "PERSON","PRODUCT","LOC","ORG","EVENT","NORP","WORK OF ART","FAC","GPE","NUM","FACILITY"])
       most_similar = s2v.most_similar(sense, n=topn)
@@ -297,8 +297,8 @@ def get_distractors (word,origsentence,sense2vecmodel,sentencemodel,top_n,lambda
   final = final[1:]
   return final
 
-sent = "You can easily edit a symbol and propagate changes in real what"
-keyword = "Time"
+# sent = "You can easily edit a symbol and propagate changes in real what"
+# keyword = "Time"
 import re
 def clean_distractors(wordlist):
   good=[]
@@ -327,4 +327,4 @@ def generate_question(title,context,radiobutton):
 
   return result
 
-print(generate_question("titre exemple",txt,""))
+# print(generate_question("titre exemple",txt,""))
