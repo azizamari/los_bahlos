@@ -136,7 +136,7 @@ def return_keywords(initial_text,summarized_text, number_of_examples=3):
       keywords_important.append(keyword)
   if number_of_examples >= len(keywords_important):
     number_of_examples=len(keywords_important)
-  return list(np.random.choice(keywords_important, size=number_of_examples))
+  return keywords_important[:number_of_examples]
 
 examples=5
 keywords_important = return_keywords(txt,summarized_text,examples)
@@ -249,6 +249,9 @@ def mmr(doc_embedding, word_embeddings, words, top_n, lambda_param):
 
 # distractor functions
 
+from collections import OrderedDict
+from sklearn.metrics.pairwise import cosine_similarity
+
 def get_distractors_wordnet(word):
     distractors=[]
     try:
@@ -263,6 +266,7 @@ def get_distractors_wordnet(word):
           return distractors
       for item in hypernym[0].hyponyms():
           name = item.lemmas()[0].name()
+          #print ("name ",name, " word",orig_word)
           if name == orig_word:
               continue
           name = name.replace("_"," ")
@@ -302,7 +306,25 @@ def clean_distractors(wordlist):
     if not re.compile("^[a-zA-Z ]*$") is None:
       good.append(word)
   return good[:2]
-words=get_distractors(keyword,sent,s2v,sentence_transformer_model,40,0.2)
-clean_distractors(words)
-print(words)
+# words=get_distractors(keyword,sent,s2v,sentence_transformer_model,40,0.2)
+# clean_distractors(words)
+# print(words)
 
+def generate_question(title,context,radiobutton):
+  result={"skill":title,"questions":[]}
+  summary_text = summarizer(context,summary_model,summary_tokenizer)
+  keys =  np.unique(return_keywords(context,summary_text,5))
+  for answer in keys:
+    ques = generate_questions(summary_text,answer,question_generator,token_2_question)
+    if radiobutton=="Wordnet":
+      distractors = get_distractors_wordnet(answer)
+    else:
+      distractors = get_distractors(answer.capitalize(),ques,s2v,sentence_transformer_model,40,0.2)
+      
+    choices=clean_distractors(distractors)
+    if(len(choices)==0):continue
+    result["questions"].append({"text":ques,"answer":answer,"choices":choices})
+
+  return result
+
+print(generate_question("titre exemple",txt,""))
