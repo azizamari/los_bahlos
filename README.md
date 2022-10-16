@@ -25,4 +25,4 @@
 * handling_pdf/pdf_operations.py pdf service
 * generate_json.py uses both los_bahlos.py and pdf_operations.py to generate json result
 ## System Design Diagram:
-[system design](./sys-design.png)
+<img src="https://github.com/azizamari/los_bahlos/blob/ac26dc9dad09ce16a1b31f7c1efff59172dfb792/sys-design.png">
