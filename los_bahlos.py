@@ -247,3 +247,62 @@ def mmr(doc_embedding, word_embeddings, words, top_n, lambda_param):
     return [words[idx] for idx in keywords_index]
 
 
+# distractor functions
+
+def get_distractors_wordnet(word):
+    distractors=[]
+    try:
+      syn = wn.synsets(word,'n')[0]
+      
+      word= word.lower()
+      orig_word = word
+      if len(word.split())>0:
+          word = word.replace(" ","_")
+      hypernym = syn.hypernyms()
+      if len(hypernym) == 0: 
+          return distractors
+      for item in hypernym[0].hyponyms():
+          name = item.lemmas()[0].name()
+          if name == orig_word:
+              continue
+          name = name.replace("_"," ")
+          name = " ".join(w.capitalize() for w in name.split())
+          if name is not None and name not in distractors:
+              distractors.append(name)
+    except:
+      print ("Wordnet distractors not found")
+    return distractors
+
+def get_distractors (word,origsentence,sense2vecmodel,sentencemodel,top_n,lambdaval):
+  distractors = get_words_from_sense2vec(word,sense2vecmodel,top_n,origsentence)
+  if len(distractors) ==0:
+    return distractors
+  distractors_new = [word.capitalize()]
+  distractors_new.extend(distractors)
+
+  embedding_sentence = origsentence+ " "+word.capitalize()
+  keyword_embedding = sentencemodel.encode([embedding_sentence])
+  distractor_embeddings = sentencemodel.encode(distractors_new)
+
+  max_keywords = min(len(distractors_new),5)
+  filtered_keywords = mmr(keyword_embedding, distractor_embeddings,distractors_new,max_keywords,lambdaval)
+  final = [word.capitalize()]
+  for wrd in filtered_keywords:
+    if wrd.lower() !=word.lower():
+      final.append(wrd.capitalize())
+  final = final[1:]
+  return final
+
+sent = "You can easily edit a symbol and propagate changes in real what"
+keyword = "Time"
+import re
+def clean_distractors(wordlist):
+  good=[]
+  for word in wordlist:
+    if not re.compile("^[a-zA-Z ]*$") is None:
+      good.append(word)
+  return good[:2]
+words=get_distractors(keyword,sent,s2v,sentence_transformer_model,40,0.2)
+clean_distractors(words)
+print(words)
+
