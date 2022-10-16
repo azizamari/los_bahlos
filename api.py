@@ -1,7 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File
+import json
+
 app=FastAPI()
 
-
-@app.get("/paragraph")
-def get_questions():
-    return {"You can easily edit a symbol and propagate changes in real what?":{"answer":"Time","wrong":["Break","Zone/region","uwu"]}}
+@app.post("/quizzes")
+async def get_questions_from_pdf(file: UploadFile= File(...)):
+    dictData={}
+    with open('result.json') as d:
+        dictData = json.load(d)
+    return dictData
+    
