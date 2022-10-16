@@ -32,7 +32,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 ## init program
 # text_wrap_example(txt)
 summary_tokenizer, summary_model = setup_t5_trans()
-set_seed(42)
+set_seed(19)
 
 
 ## summarizer service 
@@ -63,7 +63,7 @@ def summarizer(text,model,tokenizer):
                                   num_return_sequences=1,
                                   no_repeat_ngram_size=2,
                                   min_length = 75,
-                                  max_length=300)
+                                  max_length=200)
 
 
   dec = [tokenizer.decode(ids,skip_special_tokens=True) for ids in outs]
@@ -121,14 +121,15 @@ from flashtext import KeywordProcessor
 
 def return_keywords(initial_text,summarized_text, number_of_examples=3):
   keyword_list = get_nouns_multipartite(initial_text)
-  print ("keywords unsummarized: ",keyword_list)
+  # print ("keywords unsummarized: ",keyword_list)
   keyword_processor = KeywordProcessor()
   for i in keyword_list:
     keyword_processor.add_keyword(i)
 
   found_keywords_in_text = keyword_processor.extract_keywords(summarized_text)
   found_keywords_in_text = list(set(found_keywords_in_text))
-  print ("found_keywords_in_text in summarized: ",found_keywords_in_text)
+  print(found_keywords_in_text)
+  # print ("found_keywords_in_text in summarized: ",found_keywords_in_text)
 
   keywords_important =[]
   for keyword in keyword_list:
@@ -152,7 +153,7 @@ question_generator = question_generator.to(device)
 
 def generate_questions(context,answer,model,tokenizer):
   text = "context: {} answer: {}".format(context,answer)
-  encoding = tokenizer.encode_plus(text,max_length=500, pad_to_max_length=False,truncation=True, return_tensors="pt").to(device)
+  encoding = tokenizer.encode_plus(text, pad_to_max_length=False,truncation=True, return_tensors="pt").to(device)
   input_ids, attention_mask = encoding["input_ids"], encoding["attention_mask"]
 
   outs = model.generate(input_ids=input_ids, attention_mask=attention_mask, early_stopping=True, num_beams=5, num_return_sequences=1, no_repeat_ngram_size=2, max_length=72)
@@ -182,6 +183,7 @@ s2v = Sense2Vec().from_disk('s2v_old')
 
 from sentence_transformers import SentenceTransformer
 sentence_transformer_model = SentenceTransformer('msmarco-distilbert-base-v3')
+sentence_transformer_model.to(device)
 
 
 # define needed functions for finding similarity
@@ -311,9 +313,10 @@ def clean_distractors(wordlist):
 # print(words)
 
 def generate_question(title,context,radiobutton):
-  result={"skill":title,"questions":[]}
+  result={}
   summary_text = summarizer(context,summary_model,summary_tokenizer)
-  keys =  np.unique(return_keywords(context,summary_text,5))
+  print(summary_text)
+  keys =  return_keywords(context,summary_text,2)
   for answer in keys:
     ques = generate_questions(summary_text,answer,question_generator,token_2_question)
     if radiobutton=="Wordnet":
@@ -323,7 +326,7 @@ def generate_question(title,context,radiobutton):
       
     choices=clean_distractors(distractors)
     if(len(choices)==0):continue
-    result["questions"].append({"text":ques,"answer":answer,"choices":choices})
+    result={"text":ques,"answer":answer,"choices":choices}
 
   return result
 
